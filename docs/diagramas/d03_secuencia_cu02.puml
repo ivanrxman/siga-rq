@@ -1,0 +1,39 @@
+@startuml
+!include _estilo.iuml
+hide footbox
+actor Administrador as A
+boundary "PantallaCompra" as B
+control "GestorCompras" as C
+entity "Alumno" as EA
+entity "Compra" as EC
+A -> B : selecciona alumno y pack
+B -> C : consultarAccesoVigente(alumno, pack)
+activate C
+C -> EC : buscarVencimientoVigente()
+EC --> C : vencimiento (o vacío)
+C --> B : estado del acceso
+deactivate C
+A -> B : ingresa fecha de pago, monto y medio
+A -> B : confirma registro
+alt el alumno ya tiene acceso vigente (flujo alternativo)
+  B -> A : ¿Extender desde el vencimiento actual?
+  A --> B : Sí (extender = verdadero)
+end
+B -> C : registrarCompra(datos, extender)
+activate C
+C -> EA : verificarActivo()
+EA --> C : ok
+alt extender y acceso vigente
+  C -> C : inicio = vencimiento vigente
+else compra nueva
+  C -> C : inicio = fecha de pago
+end
+C -> C : vencimiento = inicio + 365 días
+C -> EC : crear(compra)
+activate EC
+EC --> C : compra registrada
+deactivate EC
+C --> B : confirmación (N.º compra, vencimiento)
+deactivate C
+B --> A : muestra fecha de vencimiento
+@enduml

@@ -1,0 +1,21 @@
+graph red {
+  graph [rankdir=TB, fontname="DejaVu Sans", fontsize=11, nodesep=0.4, ranksep=0.6, dpi=170];
+  node [fontname="DejaVu Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#EEF8F1", color="#1B7F4C"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="#555555"];
+  subgraph cluster_lan {
+    label="Red LAN de la oficina (topología estrella) - 192.168.1.0/24"; style=rounded; color="#1B7F4C"; fontcolor="#1B7F4C";
+    pc1 [label="PC Administrador 1\n(SIGA-RQ)"];
+    pc2 [label="PC Administrador 2\n(SIGA-RQ)"];
+    srv [label="Servidor de BD\nMySQL 8.0 - puerto 3306", fillcolor="#FFF4D6", color="#B8860B"];
+    nb [label="Notebook\n(Wi-Fi)"];
+    sw [label="Switch\n(8 puertos)"];
+    rt [label="Router con Wi-Fi\n(IEEE 802.11)"];
+    pc1 -- sw [label="UTP Cat 6"];
+    pc2 -- sw [label="UTP Cat 6"];
+    srv -- sw [label="UTP Cat 6"];
+    sw -- rt;
+    nb -- rt [style=dashed, label="Wi-Fi"];
+  }
+  inet [label="Internet\n(proveedor de fibra óptica)", shape=ellipse, fillcolor="#FFFDE7", color="#B8860B"];
+  rt -- inet;
+}

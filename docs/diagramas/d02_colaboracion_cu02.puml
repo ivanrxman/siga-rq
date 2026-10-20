@@ -1,0 +1,16 @@
+@startuml
+!include _estilo.iuml
+left to right direction
+actor ":Administrador" as A
+boundary ":PantallaCompra" as B
+control ":GestorCompras" as C
+entity ":Alumno" as EA
+entity ":Pack" as EP
+entity ":Compra" as EC
+A --> B : "1: seleccionaAlumnoYPack()\n2: ingresaFechaPagoYMonto()\n3: confirmaRegistro()"
+B --> C : "4: registrarCompra(alumno, pack, fecha, monto)"
+C --> EA : "5: verificarActivo()"
+C --> EP : "6: obtenerPack()"
+C --> EC : "7: buscarAccesoVigente()\n8: calcularVencimiento(inicio)\n9: crear()"
+B <.. C : "10: compraRegistrada(vencimiento)"
+@enduml

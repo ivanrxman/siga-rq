@@ -1,0 +1,79 @@
+@startuml
+!include _estilo.iuml
+hide circle
+skinparam linetype ortho
+entity usuario {
+  * **id_usuario** : INT <<PK>>
+  --
+  * email : VARCHAR(100)
+  * clave_hash : CHAR(64)
+  * rol : VARCHAR(10)
+}
+entity alumno {
+  * **id_alumno** : INT <<PK>>
+  --
+  * dni : VARCHAR(10)
+  * nombre : VARCHAR(50)
+  * apellido : VARCHAR(50)
+  * email : VARCHAR(100)
+  telefono : VARCHAR(20)
+  * fecha_alta : DATE
+  * activo : BOOLEAN
+}
+entity pack {
+  * **id_pack** : INT <<PK>>
+  --
+  * nombre : VARCHAR(40)
+  * precio : DECIMAL(10,2)
+  * nivel_newsletter : INT
+}
+entity modulo {
+  * **id_modulo** : INT <<PK>>
+  --
+  * id_pack : INT <<FK>>
+  * titulo : VARCHAR(100)
+  * orden : INT
+}
+entity compra {
+  * **id_compra** : INT <<PK>>
+  --
+  * id_alumno : INT <<FK>>
+  * id_pack : INT <<FK>>
+  * fecha_pago : DATE
+  * monto : DECIMAL(10,2)
+  * fecha_vencimiento : DATE
+}
+entity avance {
+  * **id_alumno** : INT <<PK, FK>>
+  * **id_modulo** : INT <<PK, FK>>
+  --
+  * fecha_completado : DATE
+}
+entity edicion_newsletter {
+  * **id_edicion** : INT <<PK>>
+  --
+  * titulo : VARCHAR(150)
+  * resumen : TEXT
+  * fecha_publicacion : DATE
+}
+entity edicion_pack {
+  * **id_edicion** : INT <<PK, FK>>
+  * **id_pack** : INT <<PK, FK>>
+}
+entity envio {
+  * **id_envio** : INT <<PK>>
+  --
+  * id_edicion : INT <<FK>>
+  * id_alumno : INT <<FK>>
+  * fecha_envio : DATETIME
+}
+alumno ||--o{ compra
+pack ||--o{ compra
+pack ||--|{ modulo
+alumno ||--o{ avance
+modulo ||--o{ avance
+edicion_newsletter ||--|{ edicion_pack
+pack ||--o{ edicion_pack
+edicion_newsletter ||--o{ envio
+alumno ||--o{ envio
+@enduml

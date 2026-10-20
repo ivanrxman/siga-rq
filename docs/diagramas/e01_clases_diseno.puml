@@ -1,0 +1,99 @@
+@startuml
+!include _estilo.iuml
+skinparam classAttributeIconSize 0
+abstract class Persona {
+  - dni : String
+  - nombre : String
+  - apellido : String
+  - email : String
+  + Persona(dni, nombre, apellido, email)
+  + {abstract} mostrarDatos() : void
+  + getNombreCompleto() : String
+}
+class Alumno {
+  - telefono : String
+  - fechaAlta : LocalDate
+  - activo : boolean
+  - compras : ArrayList<Compra>
+  + agregarCompra(c : Compra) : void
+  + buscarAccesoVigente(p : Pack, hoy : LocalDate) : Compra
+  + mostrarDatos() : void
+}
+class Administrador {
+  - clave : String
+  + verificarClave(clave : String) : boolean
+  + mostrarDatos() : void
+}
+abstract class Pack {
+  # nombre : String
+  # precio : double
+  + {abstract} getNivelNewsletter() : int
+  + {abstract} getPorcentajeDescuentoRenovacion() : double
+  + calcularPrecioRenovacion() : double
+}
+class PackFundamentos
+class PackAvanzado
+class PackPremium
+class Compra {
+  + {static} DIAS_DE_ACCESO : int = 365
+  - fechaPago : LocalDate
+  - monto : double
+  - fechaVencimiento : LocalDate
+  - renovacion : boolean
+  + estaVigente(hoy : LocalDate) : boolean
+  + getDiasRestantes(hoy : LocalDate) : long
+  + getEstado(hoy : LocalDate, dias : int) : String
+}
+class EdicionNewsletter {
+  - numero : int
+  - titulo : String
+  - resumen : String
+  - fechaPublicacion : LocalDate
+  - packsDestino : ArrayList<Pack>
+  + agregarPackDestino(p : Pack) : void
+}
+class Envio {
+  - fechaEnvio : LocalDateTime
+  + marcarEnviado(fecha : LocalDateTime) : void
+}
+class GestorAcademia {
+  - alumnos : ArrayList<Alumno>
+  - packs : ArrayList<Pack>
+  - ediciones : ArrayList<EdicionNewsletter>
+  - historialEnvios : ArrayList<Envio>
+  - colaEnvios : Queue<Envio>
+  + registrarAlumno(...) : Alumno
+  + buscarAlumnoPorDni(dni : String) : Alumno
+  + darDeBaja(dni : String) : void
+  + listarAlumnosOrdenados() : ArrayList<Alumno>
+  + registrarCompra(a : Alumno, p : Pack, extender : boolean) : Compra
+  + listarProximosAVencer(dias : int) : ArrayList<Compra>
+  + registrarEdicion(titulo, resumen, packs) : int
+  + procesarColaDeEnvios() : int
+  - ordenarPorVencimiento(lista) : void
+  - validarPackDestinatario(e) : ArrayList<Alumno>
+}
+class SistemaSigaRQ {
+  + {static} main(args : String[]) : void
+  - {static} mostrarMenu() : void
+}
+class DatoInvalidoException
+Exception <|-- DatoInvalidoException
+Persona <|-- Alumno
+Persona <|-- Administrador
+Pack <|-- PackFundamentos
+Pack <|-- PackAvanzado
+Pack <|-- PackPremium
+Alumno "1" o-- "0..*" Compra
+Compra "0..*" --> "1" Pack
+EdicionNewsletter "0..*" --> "1..*" Pack : destinada a
+Envio "0..*" --> "1" EdicionNewsletter
+Envio "0..*" --> "1" Alumno
+GestorAcademia o-- Alumno
+GestorAcademia o-- Pack
+GestorAcademia o-- EdicionNewsletter
+GestorAcademia o-- Envio
+SistemaSigaRQ --> GestorAcademia
+SistemaSigaRQ ..> Administrador
+GestorAcademia ..> DatoInvalidoException : <<throws>>
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+!include _estilo.iuml
+hide footbox
+actor Administrador as A
+participant ":SistemaSigaRQ" as M
+participant ":GestorAcademia" as G
+participant "alumno:Alumno" as AL
+participant "pack:Pack" as P
+participant "compra:Compra" as C
+A -> M : opción 4 + DNI + número de pack
+M -> G : buscarAlumnoPorDni(dni)
+G --> M : alumno
+M -> G : buscarPack(numero)
+G --> M : pack
+M -> G : consultarAccesoVigente(alumno, pack)
+G -> AL : buscarAccesoVigente(pack, hoy)
+AL --> G : vigente (o null)
+G --> M : vigente
+alt vigente != null
+  M -> P : calcularPrecioRenovacion()
+  P --> M : precio con descuento
+  M -> A : ¿Extender desde el vencimiento? (S/N)
+  A --> M : S
+end
+M -> G : registrarCompra(alumno, pack, extender)
+alt vigente != null y extender
+  G -> C ** : new Compra(..., inicio = vencimiento vigente, renovacion = true)
+else
+  G -> C ** : new Compra(..., inicio = hoy, renovacion = false)
+end
+C -> C : fechaVencimiento = inicio + 365
+G -> AL : agregarCompra(compra)
+G --> M : compra
+M --> A : "Compra registrada. Acceso hasta el ..."
+@enduml

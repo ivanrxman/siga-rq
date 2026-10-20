@@ -1,0 +1,14 @@
+@startuml
+!include _estilo.iuml
+component "Prototipo SIGA-RQ (Java)" as APP {
+  component "Menú\n(SistemaSigaRQ)" as V
+  component "Lógica de negocio\n(GestorAcademia)" as L
+  component "Clases del dominio\n(Persona, Alumno, Pack,\nCompra, Envio, ...)" as MO
+}
+component "Driver JDBC\nmysql-connector-j" as DRV
+database "MySQL\nsiga_rq" as DB
+V --> L
+L --> MO
+L ..> DRV : <<TP4>>
+DRV --> DB : TCP 3306
+@enduml

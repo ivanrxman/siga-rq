@@ -1,0 +1,29 @@
+@startuml
+!include _estilo.iuml
+hide footbox
+actor Administrador as A
+boundary "PantallaNewsletter" as B
+control "GestorNewsletter" as C
+entity "Compra" as EC
+entity "EdicionNewsletter" as EE
+entity "Envio" as EN
+A -> B : ingresa título, resumen y packs destino
+A -> B : registrar edición
+B -> C : registrarEdicion(edición)
+activate C
+C -> C : validarDatos()
+group <<include>> CU07 Validar pack destinatario
+  C -> EC : buscarAlumnosConAccesoVigente(packs, hoy)
+  EC --> C : lista de alumnos
+end
+alt hay destinatarios
+  C -> EE : crear(edición, packs)
+  C -> EN : crear(edición, alumno) por cada destinatario
+  C --> B : edición registrada (cantidad)
+  B --> A : confirma registro
+else sin destinatarios
+  C --> B : "No hay alumnos con acceso vigente"
+  B --> A : informa y no registra
+end
+deactivate C
+@enduml

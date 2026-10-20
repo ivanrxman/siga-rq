@@ -1,0 +1,22 @@
+@startuml
+!include _estilo.iuml
+package "Gestión de alumnos y accesos" as P1 {
+  rectangle "PantallaAlumnos\nPantallaCompra\nGestorAlumnos\nGestorCompras\nAlumno, Pack, Compra" as r1
+}
+package "Control de vencimientos" as P2 {
+  rectangle "PantallaVencimientos\nGestorVencimientos" as r2
+}
+package "Gestión de newsletter" as P3 {
+  rectangle "PantallaNewsletter\nPantallaHistorial\nGestorNewsletter\nEdicionNewsletter, Envio" as r3
+}
+package "Contenido y avance" as P4 {
+  rectangle "Modulo\nAvance" as r4
+}
+package "Seguridad" as P5 {
+  rectangle "PantallaLogin\nGestorAutenticacion\nUsuario" as r5
+}
+P2 ..> P1 : <<use>>
+P3 ..> P1 : <<use>>
+P4 ..> P1 : <<use>>
+P1 ..> P5 : <<use>>
+@enduml
